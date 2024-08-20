@@ -1,0 +1,14 @@
+select annio.* , b.column_name
+from(
+select a.column_name, rank() over (order by a.column_name desc) pos
+from (
+select top 32 column_name
+from information_schema.columns 
+where table_name='EAC_FASECOLDA_WK'
+and column_name like '[1-9]%'
+order by 1 desc )a )annio
+inner join (
+select column_name , rank () over (order by ordinal_position)pos 
+from information_schema.columns 
+where table_schema='dbo' and table_name='SG_FASECOLDA'
+and column_name like 'Valor%') b on annio.pos=b.pos
