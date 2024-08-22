@@ -1,0 +1,142 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/16/2024 4:03:12 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-H0ADGQ8"
+  DTS:CreatorName="DESKTOP-H0ADGQ8\ruben"
+  DTS:DTSID="{74545E6E-0F42-4F5F-9731-4DF414FF38F7}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5397.1"
+  DTS:LocaleID="13322"
+  DTS:ObjectName="Package"
+  DTS:PackageType="5"
+  DTS:VersionBuild="10"
+  DTS:VersionGUID="{FA1F83BA-26DD-4331-939E-63A45AE5C83C}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DESKTOP-H0ADGQ8\MSSQLSERVER_DEV.Seguros.enaccion]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{C64B040B-1AE7-4F9A-9683-96C96D2FFB22}"
+      DTS:ObjectName="DESKTOP-H0ADGQ8\MSSQLSERVER_DEV.Seguros.enaccion">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=DESKTOP-H0ADGQ8\MSSQLSERVER_DEV;User ID=enaccion;Initial Catalog=Seguros;Provider=MSOLEDBSQL.1;Application Name=SSIS-Package-{C64B040B-1AE7-4F9A-9683-96C96D2FFB22}DESKTOP-H0ADGQ8\MSSQLSERVER_DEV.Seguros.enaccion;Auto Translate=False;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA5hIJ6Sp00k6OrAONzcPQjQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABASbCde9L8EJJjOlo7W0PPDHgX5Mpzpu6ClKTjNsT+OQAAAAAOgAAAAAIAACAAAADEEVlxSt3F5Ui6l6zGwCH5fiGvLAwU6dPcF38cAsBHmSAAAABp9buBvPAnNuHAJl1LWQZG2R441WCn//E2U4eeBPl6zEAAAACePnPD4w5iHMsgMTLM7VH0pogx4nR4zwAmuD9qdMoUffr5n4u9OgAlgJ2TCFrKNFM4K5l1m8UX9Ly2jEc8j/e/</DTS:Password>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Tarea Ejecutar proceso"
+      DTS:CreationName="Microsoft.ExecuteProcess"
+      DTS:Description="Tarea Ejecutar proceso"
+      DTS:DTSID="{716E05A4-5649-4EA3-A29A-4A00162C63CE}"
+      DTS:ExecutableType="Microsoft.ExecuteProcess"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Tarea Ejecutar proceso"
+      DTS:TaskContact="Execute Process Task;Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecuteProcessData
+          Executable="d:\Python\python.exe"
+          Arguments="&quot;z:\2020\FALABELLA-SEGUROS\desarrollo PYTHON\archivosCSV\cargaArchivos-main\carga_tabla_trabajo.py&quot;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Tarea Ejecutar SQL"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarea Ejecutar SQL"
+      DTS:DTSID="{F4C9FDAB-C9D2-46BB-B9DA-453EE170C7A3}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Tarea Ejecutar SQL"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{C64B040B-1AE7-4F9A-9683-96C96D2FFB22}"
+          SQLTask:SqlStatementSource="use seguros&#xA;go&#xA;&#xA;truncate table SG_FASECOLDA&#xA;--------------------------------------------&#xA;declare @h_registro varchar(max)&#xA;declare @h_col01 varchar(100)&#xA;declare @h_col02 varchar(100)&#xA;declare @h_pos integer&#xA;declare @h_texto01 varchar(500)&#xA;declare @h_texto02 varchar(500)&#xA;declare @h_textoFINAL varchar(max)&#xA;&#xA;declare c1 cursor for &#xA;select annio.column_name , b.column_name, annio.pos&#xA;from(&#xA;select a.column_name, rank() over (order by a.column_name desc) pos&#xA;from (&#xA;select top 32 column_name&#xA;from information_schema.columns &#xA;where table_name='EAC_FASECOLDA_WK'&#xA;and column_name like '[1-9]%'&#xA;order by 1 desc )a )annio&#xA;inner join (&#xA;select column_name , rank () over (order by ordinal_position)pos &#xA;from information_schema.columns &#xA;where table_schema='dbo' and table_name='SG_FASECOLDA'&#xA;and column_name like 'Valor%') b on annio.pos=b.pos ;&#xA;&#xA;open c1&#xA;&#xA;fetch next from c1 into @h_col01, @h_col02, @h_pos&#xA;&#xA;WHILE @@FETCH_STATUS=0&#xA;BEGIN&#xA;  if @h_pos=1 &#xA;      BEGIN&#xA;          set @h_texto01 = '[' + @h_col01 + ']'&#xA;&#x9;&#x9;  set @h_texto02 = @h_col02&#xA;&#x9;  END &#xA;  else&#xA;      BEGIN &#xA;          set @h_texto01 = @h_texto01 + ','  + '[' + @h_col01 + ']'&#xA;&#x9;&#x9;  set @h_texto02 = @h_texto02 + ','  + @h_col02&#xA;      END&#xA;fetch next from c1 into @h_col01, @h_col02, @h_pos&#xA;END&#xA;&#xA;&#xA;close c1&#xA;deallocate c1&#xA;&#xA;&#xA;set @h_texto02 =  ' insert into sg_fasecolda ( ' +  @h_texto02 + ', FechaInsert,  EstadoProceso , DescVehiculo ,  DesVehiculoTipo , DesVehiculoMarca, CodVehiculoExterno , CodHomologado, DesGrupoModelo) '&#xA;---------------------------------------------------------------&#xA;&#xA;exec  ( @h_texto02 +  ' select ' + @h_texto01 + '&#xA;      , convert(varchar,getdate(),120)&#xA;&#x9;  , ''N''&#xA;&#x9;  , replace(Referencia2,'''''''','''''''''''') + '''' + replace(Referencia3,'''''''','''''''''''')&#xA;&#x9;  , clase , Marca , codigo , Homologocodigo, replace(Referencia1,'''''''','''''''''''')&#xA;&#x9;   from eac_fasecolda_wk ')&#xA;&#xA;----------------------------------------------------------------&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restricción]"
+      DTS:CreationName=""
+      DTS:DTSID="{FBA8A5A9-99D9-4D9F-8BA7-7205F5B11D5B}"
+      DTS:From="Package\Tarea Ejecutar proceso"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restricción"
+      DTS:To="Package\Tarea Ejecutar SQL" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
+<!--Si edita manualmente esta sección y comete un error, puede eliminarlo. -->
+<!--El paquete podrá cargarse normalmente, pero se perderá la información de diseño anterior y el diseñador reorganizará los elementos automáticamente en la superficie de diseño.-->
+<Objects
+  Version="8">
+  <!--Cada uno de los nodos siguientes contiene propiedades que no afectan al comportamiento en tiempo de ejecución.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="193,42"
+          Id="Package\Tarea Ejecutar proceso"
+          TopLeft="63,56" />
+        <NodeLayout
+          Size="176,42"
+          Id="Package\Tarea Ejecutar SQL"
+          TopLeft="203,174" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restricción]"
+          TopLeft="159.5,98">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="131.5,76"
+              Start="0,0"
+              End="131.5,68.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,34"
+                    Point2="0,38"
+                    Point3="4,38" />
+                  <mssgle:LineSegment
+                    End="127.5,38" />
+                  <mssgle:CubicBezierSegment
+                    Point1="127.5,38"
+                    Point2="131.5,38"
+                    Point3="131.5,42" />
+                  <mssgle:LineSegment
+                    End="131.5,68.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
