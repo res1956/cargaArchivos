@@ -72,10 +72,7 @@ for index, row in df.iterrows():
     insert_query = f"INSERT INTO {work_table} ({columns}) VALUES ({placeholders});"
     
     # Convertir todos los valores a cadenas y manejar nulos
-    values = tuple(
-        None if str(value) == '0' else str(value) if pd.notna(value) else None
-        for value in row
-    )
+    values = tuple(str(value) if pd.notna(value) else None for value in row)
     
     try:
         cursor.execute(insert_query, values)
